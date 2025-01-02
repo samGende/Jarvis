@@ -1,10 +1,11 @@
 import torch
 from utils.Encoder import Encoder
 from utils.BigramLanguageModel import BigramLanguageModel
+from utils.BiagramAttentionModel import BigramAttentionModel
 
 
 ## load data from txt file 
-with open('downloaded_file.txt', 'r') as file:
+with open('easy.txt', 'r') as file:
     text = file.read()
 
 ##
@@ -42,9 +43,11 @@ batch, targets = get_batch('train')
 print(f'shape of batch: {batch.shape}')
 
 ## do training 
-model = BigramLanguageModel(encoder.vocab_size)
+#model = BigramLanguageModel(encoder.vocab_size)
+model = BigramAttentionModel(encoder.vocab_size, 256)
+
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
-iters = 1000000
+iters = 100
 
 for i in range(iters):
     batch, targets = get_batch('train')
@@ -53,11 +56,12 @@ for i in range(iters):
     loss.backward()
     optimizer.step()
  
-    if(i % 1000 == 0):
+    if(i % 10 == 0):
         print(f'loss: {loss:f} iterartion: {i}')
 
-context = torch.tensor(encoder.encode('Oh Romeo'))
-pred = torch.squeeze(model.genrate(context, 100))
+context = torch.tensor(encoder.encode('easy'))
+context = context.unsqueeze(0)
+pred = torch.squeeze(model.genrate(context, 10))
 print(pred.shape)
 words = encoder.decode(pred.tolist())
 print(f'jarvises first words \" {words} \"')

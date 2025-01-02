@@ -1,0 +1,5 @@
+{
+  "python.terminal.launchArgs": [],
+  "python.pythonPath": "/usr/bin/python",
+  "python.analysis.autoImportCompletions": true
+}

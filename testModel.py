@@ -3,6 +3,8 @@ import torch
 
 from utils.Encoder import Encoder 
 from utils.BigramLanguageModel import BigramLanguageModel
+from utils.BiagramAttentionModel import BigramAttentionModel
+from utils.Block import Block
 
 text = 'abcH defdgqooureutoirwpok.,m xa,mrdsourewpirpq;l;d,ca;pweiro,z,mmfofpipwptqutyuiowqasdfghjklzxcvbnm,pqiwoeruigjqlv.,lerioewutiowpeoriQWERTYUIOPASDFGHJKKLZXCVBNM'
 
@@ -18,9 +20,10 @@ print(encoding)
 decoded_string = encoder.decode(encoding)
 print(decoded_string)
 
-model = BigramLanguageModel(encoder.vocab_size)
+model = BigramAttentionModel(encoder.vocab_size, 256)
 
 encoding = torch.tensor(encoding)
+encoding = encoding.unsqueeze(0)
 
 logits, loss = model(encoding)
 
