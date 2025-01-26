@@ -13,6 +13,12 @@ class BigramAttentionModel(nn.Module):
       self.final_ln = nn.LayerNorm(n_embedding)
       self.lm_head = nn.Linear(n_embedding, vocab_size)
 
+    def save_weights(self, file_path):
+      torch.save(self.state_dict(), file_path)
+    
+    def load_weights(self, file_path):
+      self.load_state_dict(torch.load(file_path))
+    
     def forward(self, context, targets=None):
       B,T = context.shape
       tok_emb = self.token_embeding(context)

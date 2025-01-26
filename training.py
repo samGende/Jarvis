@@ -3,6 +3,9 @@ from utils.Encoder import Encoder
 from utils.BigramLanguageModel import BigramLanguageModel
 from utils.BiagramAttentionModel import BigramAttentionModel
 
+model_name = input('Enter model name: ').strip()
+iters = int(input('endter number of iterations: ').strip())
+path_to_file = input('Enter path to file: ').strip()
 
 ## load data from txt file 
 with open('easy.txt', 'r') as file:
@@ -47,7 +50,8 @@ print(f'shape of batch: {batch.shape}')
 model = BigramAttentionModel(encoder.vocab_size, 256)
 
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
-iters = 100
+
+losses = []
 
 for i in range(iters):
     batch, targets = get_batch('train')
@@ -56,13 +60,17 @@ for i in range(iters):
     loss.backward()
     optimizer.step()
  
-    if(i % 10 == 0):
+    if(i % 100 == 0):
         print(f'loss: {loss:f} iterartion: {i}')
+        losses.append(loss)
+model.save_weights(f'{model_name}.pt')
 
-context = torch.tensor(encoder.encode('easy'))
+
+context = torch.tensor(encoder.encode('oh romeo'))
 context = context.unsqueeze(0)
 pred = torch.squeeze(model.genrate(context, 10))
 print(pred.shape)
 words = encoder.decode(pred.tolist())
 print(f'jarvises first words \" {words} \"')
 
+print('losses', losses)
